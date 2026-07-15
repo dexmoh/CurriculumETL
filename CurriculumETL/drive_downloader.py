@@ -8,7 +8,6 @@ from pathlib import Path
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaIoBaseDownload
 
 SERVICE_ACCOUNT_JSON = r"curriculumetl-9019948c547c.json"
@@ -93,10 +92,10 @@ def download_drive_data(download_dir: str = DOWNLOAD_DIR):
             if not json_data:
                 continue
 
-            if (not "fileId" in json_data) or (not json_data["fileId"]):
+            if ("fileId" not in json_data) or (not json_data["fileId"]):
                 continue
 
-            if (not "data" in json_data) or (not json_data["data"]):
+            if ("data" not in json_data) or (not json_data["data"]):
                 continue
 
             json_data["data"] = json_data["data"][0]

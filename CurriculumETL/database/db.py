@@ -1,6 +1,4 @@
-
 import pyodbc
-
 
 def get_connection():
     connection_string = (
@@ -10,6 +8,5 @@ def get_connection():
         "Trusted_Connection=yes;"
         "TrustServerCertificate=yes;"
     )
-
 
     return pyodbc.connect(connection_string)

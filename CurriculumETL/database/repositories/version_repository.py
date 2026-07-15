@@ -1,14 +1,7 @@
-from database.db import get_connection
-
-def insert_lesson_version (lesson_id, title, school_year):
-    conn = get_connection()
-    cursor = conn.cursor()
-
+def insert_lesson_version (cursor, lesson_id, file_id):
     cursor.execute("""
-        INSERT INTO lesson_version (les_id, title, school_year)
-        VALUES (?, ?, ?)
-    """, lesson_id, title, school_year)
-    #return cursor.fetchone()[0]
-    conn.commit()
-    conn.close()
-    conn.close()
+        INSERT INTO lesson_version (les_id, fileId)
+        OUTPUT INSERTED.id
+        VALUES (?, ?)
+    """, lesson_id, file_id)
+    return cursor.fetchone()[0]

@@ -1,5 +1,4 @@
 class TransactionManager:
-
     def __init__(self, connection):
         self.conn = connection
 
@@ -13,5 +12,3 @@ class TransactionManager:
             self.conn.rollback()
         else:
             self.conn.commit()
-            print("Transaction committed.")
-
