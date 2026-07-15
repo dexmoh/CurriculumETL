@@ -1,9 +1,14 @@
-# This tool downloads all of the JSON data from Google Drive and stores it in a local folder.
+# This tool downloads all of the JSON data from Google Drive,
+# validates it, reformats it and stores it in a local folder.
+# Empty JSON files and JSON files with invalid data don't get saved.
 
+import io
+import json
 from pathlib import Path
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaIoBaseDownload
 
 SERVICE_ACCOUNT_JSON = r"curriculumetl-9019948c547c.json"
@@ -12,7 +17,7 @@ SCOPES: list[str]    = ['https://www.googleapis.com/auth/drive.readonly']
 DOWNLOAD_DIR: str    = "data" # Where should the files be stored.
 
 # Download all JSON files from Google Drive and store them locally.
-def download_drive_data():
+def download_drive_data(download_dir: str = DOWNLOAD_DIR):
     # Fetch Google service.
     print("Creating Google drive service...")
     creds = service_account.Credentials.from_service_account_file(
@@ -55,7 +60,7 @@ def download_drive_data():
     print("Downloading files...")
 
     counter = 0
-    Path(DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
+    Path(download_dir).mkdir(parents=True, exist_ok=True)
 
     for file in files:
         counter += 1
@@ -65,23 +70,48 @@ def download_drive_data():
         if not file_name.endswith(".json"):
             continue
 
-        file_path = f"{DOWNLOAD_DIR}/{file_name}"
+        file_path = f"{download_dir}/{file_name}"
 
-        # Don't download the same file twice.
         if Path(file_path).exists():
             continue
 
-        # Create a file.
-        Path(file_path).touch()
+        file_stream = io.BytesIO()
+        request = service.files().get_media(fileId=file_id)
+        downloader = MediaIoBaseDownload(file_stream, request)
 
-        # Download file.
-        with open(file_path, "wb") as file_stream:
-            request = service.files().get_media(fileId=file_id)
-            downloader = MediaIoBaseDownload(file_stream, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
 
-            done = False
-            while not done:
-                status, done = downloader.next_chunk()
+        file_stream.seek(0)
+
+        # Load file as JSON data, check if it's valid, insert file name and id
+        # into it and then save it back as a file.
+        try:
+            json_data = json.load(file_stream)
+
+            if not json_data:
+                continue
+
+            if (not "fileId" in json_data) or (not json_data["fileId"]):
+                continue
+
+            if (not "data" in json_data) or (not json_data["data"]):
+                continue
+
+            json_data["data"] = json_data["data"][0]
+
+            if "error" in json_data["data"]:
+                continue
+
+            json_data["driveFileName"] = file_name
+            json_data["driveFileId"] = file_id
+
+            # Save JSON data to a file.
+            with open(file_path, "w", encoding="utf-8") as out_file:
+                json.dump(json_data, out_file, indent=2, ensure_ascii=False)
+        except json.JSONDecodeError as e:
+            print(f"Error parsing downloaded file as JSON: {e}")
 
         if counter % 10 == 0:
             print(f"Download progress: {round((counter / file_count) * 100.0, 2)}% ({counter} files downloaded.)")
