@@ -4,6 +4,8 @@ from database.repositories.lesson_repository import insert_lesson
 from database.repositories.version_repository import insert_lesson_version
 from database.repositories.review_repository import insert_lesson_review
 from database.repositories.lesson_other_stats import insert_lesson_other_stats
+from database.repositories.yt_videos import insert_yt_videos
+from database.repositories.yt_links import insert_yt_links
 
 class ETLService:
     def process_file(self, json_data):
@@ -34,10 +36,22 @@ class ETLService:
                     json_data.get("driveFileId", None)
                 )
 
-                insert_lesson_other_stats(
+                other_stats_id = insert_lesson_other_stats(
                     cursor,
                     review_id,
                     json_data["data"]["OtherStats"]["lessons"][0]
+                )
+
+                insert_yt_videos(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("ytVideos", [])
+                )
+
+                insert_yt_links(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("ytLinks", [])
                 )
         finally:
             conn.close()
