@@ -3,6 +3,7 @@ from database.transaction import TransactionManager
 from database.repositories.lesson_repository import insert_lesson
 from database.repositories.version_repository import insert_lesson_version
 from database.repositories.review_repository import insert_lesson_review
+from database.repositories.lesson_other_stats import insert_lesson_other_stats
 
 class ETLService:
     def process_file(self, json_data):
@@ -31,6 +32,12 @@ class ETLService:
                     version_id,
                     json_data.get("driveFileName", None),
                     json_data.get("driveFileId", None)
+                )
+
+                insert_lesson_other_stats(
+                    cursor,
+                    review_id,
+                    json_data["data"]["OtherStats"]["lessons"][0]
                 )
         finally:
             conn.close()
