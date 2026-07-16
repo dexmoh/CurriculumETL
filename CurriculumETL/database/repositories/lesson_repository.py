@@ -1,6 +1,6 @@
 from database.db import get_connection
 
-def insert_lesson(cursor, course_code, title, academic_year, lesson_number, lesson_author, naucno_polje):
+def insert_lesson(cursor, course_code: str, title: str, academic_year: str, lesson_number: str, lesson_author: str, naucno_polje: str):
     cursor.execute("""
         INSERT INTO lesson (course_code, title, academic_year, lesson_number, lesson_author, naucno_polje)
         OUTPUT INSERTED.id
@@ -8,7 +8,7 @@ def insert_lesson(cursor, course_code, title, academic_year, lesson_number, less
     """, course_code, title, academic_year, lesson_number, lesson_author, naucno_polje)
     return cursor.fetchone()[0]
 
-def get_lesson_id_by_code(code):
+def get_lesson_id_by_code(code: str):
     conn = get_connection()
     cursor = conn.cursor()
 

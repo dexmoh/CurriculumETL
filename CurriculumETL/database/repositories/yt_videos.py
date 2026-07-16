@@ -1,4 +1,4 @@
-def insert_yt_videos(cursor, les_id, durations: list[str]):
+def insert_yt_videos(cursor, les_id: int, durations: list[str]):
     for duration in durations:
         if not duration or duration == "":
             continue

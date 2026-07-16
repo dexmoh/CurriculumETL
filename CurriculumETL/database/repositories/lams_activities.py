@@ -1,4 +1,4 @@
-def insert_lams_activities(cursor, les_id, activities: list):
+def insert_lams_activities(cursor, les_id: int, activities: list):
     for activity in activities:
         if not activity:
             continue

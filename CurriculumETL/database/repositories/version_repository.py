@@ -1,7 +1,7 @@
-def insert_lesson_version (cursor, lesson_id, file_id):
+def insert_lesson_version (cursor, les_id: int, file_id: str):
     cursor.execute("""
         INSERT INTO lesson_version (les_id, fileId)
         OUTPUT INSERTED.id
         VALUES (?, ?)
-    """, lesson_id, file_id)
+    """, les_id, file_id)
     return cursor.fetchone()[0]

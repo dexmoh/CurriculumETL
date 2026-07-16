@@ -1,4 +1,4 @@
-def insert_forums(cursor, les_id, forums: list):
+def insert_forums(cursor, les_id: int, forums: list):
     for forum in forums:
         if not forum:
             continue

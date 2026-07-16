@@ -1,4 +1,4 @@
-def insert_lesson_other_stats(cursor, lesson_id, stats_json):
+def insert_lesson_other_stats(cursor, lesson_id: int, stats_json: dict):
     cursor.execute("""
         INSERT INTO lesson_other_stats (
             les_id,

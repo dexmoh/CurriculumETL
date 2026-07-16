@@ -1,4 +1,4 @@
-def insert_google_videos_lvl1(cursor, les_id, durations: list[str]):
+def insert_google_videos_lvl1(cursor, les_id: int, durations: list[str]):
     for duration in durations:
         if not duration or duration == "":
             continue

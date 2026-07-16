@@ -1,4 +1,4 @@
-def insert_summary(cursor, les_id, summary_id, summary_title):
+def insert_summary(cursor, les_id: int, summary_id: str, summary_title: str):
     cursor.execute("""
         INSERT INTO summary (les_id, summary_id, summary_title)
         VALUES (?, ?, ?)
