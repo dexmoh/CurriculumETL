@@ -6,6 +6,12 @@ from database.repositories.review_repository import insert_lesson_review
 from database.repositories.lesson_other_stats import insert_lesson_other_stats
 from database.repositories.yt_videos import insert_yt_videos
 from database.repositories.yt_links import insert_yt_links
+from database.repositories.google_videos import insert_google_videos
+from database.repositories.google_videos_uvod import insert_google_videos_uvod
+from database.repositories.google_videos_lvl1 import insert_google_videos_lvl1
+from database.repositories.google_videos_lvl2 import insert_google_videos_lvl2
+from database.repositories.google_videos_lvl3 import insert_google_videos_lvl3
+from database.repositories.google_videos_lvl0 import insert_google_videos_lvl0
 
 class ETLService:
     def process_file(self, json_data):
@@ -52,6 +58,42 @@ class ETLService:
                     cursor,
                     other_stats_id,
                     json_data["data"]["OtherStats"]["lessons"][0].get("ytLinks", [])
+                )
+
+                insert_google_videos(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideos", [])
+                )
+
+                insert_google_videos_uvod(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosUVOD", [])
+                )
+
+                insert_google_videos_lvl1(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl1", [])
+                )
+
+                insert_google_videos_lvl2(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl2", [])
+                )
+
+                insert_google_videos_lvl3(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl3", [])
+                )
+
+                insert_google_videos_lvl0(
+                    cursor,
+                    other_stats_id,
+                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl0", [])
                 )
         finally:
             conn.close()
