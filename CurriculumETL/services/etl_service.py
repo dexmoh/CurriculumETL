@@ -20,6 +20,10 @@ class ETLService:
 
         try:
             with TransactionManager(conn) as cursor:
+                lessons_data = {}
+                if len(json_data["data"]["OtherStats"]["lessons"]) > 0:
+                    lessons_data = json_data["data"]["OtherStats"]["lessons"][0]
+
                 lesson_id = insert_lesson(
                     cursor,
                     json_data["data"].get("CourseCode", None),
@@ -27,7 +31,7 @@ class ETLService:
                     json_data["data"].get("Year", None),
                     json_data["data"].get("Lesson", None),
                     json_data["data"].get("Author", None),
-                    json_data["data"]["OtherStats"]["lessons"][0].get("NaucnoPolje", None)
+                    lessons_data.get("NaucnoPolje")
                 )
 
                 version_id = insert_lesson_version(
@@ -43,59 +47,17 @@ class ETLService:
                     json_data.get("driveFileId", None)
                 )
 
-                other_stats_id = insert_lesson_other_stats(
-                    cursor,
-                    review_id,
-                    json_data["data"]["OtherStats"]["lessons"][0]
-                )
+                if lessons_data:
+                    other_stats_id = insert_lesson_other_stats(cursor, review_id, lessons_data)
 
-                insert_yt_videos(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("ytVideos", [])
-                )
-
-                insert_yt_links(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("ytLinks", [])
-                )
-
-                insert_google_videos(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideos", [])
-                )
-
-                insert_google_videos_uvod(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosUVOD", [])
-                )
-
-                insert_google_videos_lvl1(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl1", [])
-                )
-
-                insert_google_videos_lvl2(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl2", [])
-                )
-
-                insert_google_videos_lvl3(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl3", [])
-                )
-
-                insert_google_videos_lvl0(
-                    cursor,
-                    other_stats_id,
-                    json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl0", [])
-                )
+                    insert_yt_videos(cursor, other_stats_id, lessons_data.get("ytVideos", []))
+                    insert_yt_links(cursor, other_stats_id, lessons_data.get("ytLinks", []))
+                    insert_google_videos(cursor, other_stats_id, lessons_data.get("googleVideos", []))
+                    insert_google_videos_uvod(cursor, other_stats_id, lessons_data.get("googleVideosUVOD", []))
+                    insert_google_videos_lvl1(cursor, other_stats_id, lessons_data.get("googleVideosLvl1", []))
+                    insert_google_videos_lvl2(cursor, other_stats_id, lessons_data.get("googleVideosLvl2", []))
+                    insert_google_videos_lvl3(cursor, other_stats_id, lessons_data.get("googleVideosLvl3", []))
+                    insert_google_videos_lvl0(cursor, other_stats_id, lessons_data.get("googleVideosLvl0", []))
 
                 if "Summary" in json_data["data"] and json_data["data"]["Summary"]:
                     insert_summary(
