@@ -14,6 +14,7 @@ from database.repositories.google_videos_lvl3 import insert_google_videos_lvl3
 from database.repositories.google_videos_lvl0 import insert_google_videos_lvl0
 from database.repositories.summary import insert_summary
 from database.repositories.overview import insert_overview
+from database.repositories.forums import insert_forums
 
 class ETLService:
     def process_file(self, json_data):
@@ -27,25 +28,25 @@ class ETLService:
 
                 lesson_id = insert_lesson(
                     cursor,
-                    json_data["data"].get("CourseCode", None),
-                    json_data["data"].get("Title", None),
-                    json_data["data"].get("Year", None),
-                    json_data["data"].get("Lesson", None),
-                    json_data["data"].get("Author", None),
+                    json_data["data"].get("CourseCode"),
+                    json_data["data"].get("Title"),
+                    json_data["data"].get("Year"),
+                    json_data["data"].get("Lesson"),
+                    json_data["data"].get("Author"),
                     lessons_data.get("NaucnoPolje")
                 )
 
                 version_id = insert_lesson_version(
                     cursor,
                     lesson_id,
-                    json_data.get("fileId", None)
+                    json_data.get("fileId")
                 )
 
                 review_id = insert_lesson_review(
                     cursor,
                     version_id,
-                    json_data.get("driveFileName", None),
-                    json_data.get("driveFileId", None)
+                    json_data.get("driveFileName"),
+                    json_data.get("driveFileId")
                 )
 
                 if lessons_data:
@@ -75,6 +76,12 @@ class ETLService:
                         json_data["data"]["Overview"].get("OverviewId"),
                         json_data["data"]["Overview"].get("OverviewTitle")
                     )
+                
+                insert_forums(
+                    cursor,
+                    review_id,
+                    json_data["data"].get("Forums", [])
+                )
         finally:
             conn.close()
             print(f"Processed file: {json_data.get("driveFileName", "N/A")}")
