@@ -1,4 +1,6 @@
-def insert_learning_objects(cursor, les_id, learning_objects: list):
+from database.repositories.learning_object_subobjects import insert_learning_object_subobjects
+
+def insert_learning_objects(cursor, les_id: int, learning_objects: list):
     for object in learning_objects:
         if not object:
             continue
@@ -24,6 +26,7 @@ def insert_learning_objects(cursor, les_id, learning_objects: list):
                 school_year,
                 faculty
             )
+            OUTPUT INSERTED.id
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             les_id,
@@ -45,3 +48,13 @@ def insert_learning_objects(cursor, les_id, learning_objects: list):
             object.get("SchoolYear"),
             object.get("Faculty")
         )
+
+        object_id: int = cursor.fetchone()[0]
+        subobjects = object.get("Subobjects", [])
+
+        if subobjects:
+            insert_learning_object_subobjects(
+                cursor,
+                object_id,
+                subobjects
+            )
