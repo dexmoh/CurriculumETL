@@ -12,6 +12,7 @@ from database.repositories.google_videos_lvl1 import insert_google_videos_lvl1
 from database.repositories.google_videos_lvl2 import insert_google_videos_lvl2
 from database.repositories.google_videos_lvl3 import insert_google_videos_lvl3
 from database.repositories.google_videos_lvl0 import insert_google_videos_lvl0
+from database.repositories.summary import insert_summary
 
 class ETLService:
     def process_file(self, json_data):
@@ -95,6 +96,14 @@ class ETLService:
                     other_stats_id,
                     json_data["data"]["OtherStats"]["lessons"][0].get("googleVideosLvl0", [])
                 )
+
+                if "Summary" in json_data["data"] and json_data["data"]["Summary"]:
+                    insert_summary(
+                        cursor,
+                        review_id,
+                        json_data["data"]["Summary"].get("SummaryId"),
+                        json_data["data"]["Summary"].get("SummaryTitle")
+                    )
         finally:
             conn.close()
             print(f"Processed file: {json_data.get("driveFileName", "N/A")}")
