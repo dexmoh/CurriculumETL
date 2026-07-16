@@ -13,6 +13,7 @@ from database.repositories.google_videos_lvl2 import insert_google_videos_lvl2
 from database.repositories.google_videos_lvl3 import insert_google_videos_lvl3
 from database.repositories.google_videos_lvl0 import insert_google_videos_lvl0
 from database.repositories.summary import insert_summary
+from database.repositories.overview import insert_overview
 
 class ETLService:
     def process_file(self, json_data):
@@ -65,6 +66,14 @@ class ETLService:
                         review_id,
                         json_data["data"]["Summary"].get("SummaryId"),
                         json_data["data"]["Summary"].get("SummaryTitle")
+                    )
+
+                if "Overview" in json_data["data"] and json_data["data"]["Overview"]:
+                    insert_overview(
+                        cursor,
+                        review_id,
+                        json_data["data"]["Overview"].get("OverviewId"),
+                        json_data["data"]["Overview"].get("OverviewTitle")
                     )
         finally:
             conn.close()
