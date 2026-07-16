@@ -16,6 +16,7 @@ from database.repositories.summary import insert_summary
 from database.repositories.overview import insert_overview
 from database.repositories.forums import insert_forums
 from database.repositories.lams_activities import insert_lams_activities
+from database.repositories.learning_objects import insert_learning_objects
 
 # Parse JSON lecture data and map it to SQL database.
 def etl_process_json(json_data: dict):
@@ -88,6 +89,12 @@ def etl_process_json(json_data: dict):
                 cursor,
                 review_id,
                 json_data["data"].get("LamsActivities", [])
+            )
+
+            insert_learning_objects(
+                cursor,
+                review_id,
+                json_data["data"].get("LearningObject", [])
             )
     finally:
         conn.close()
