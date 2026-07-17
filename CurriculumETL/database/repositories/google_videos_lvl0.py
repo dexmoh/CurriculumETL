@@ -4,6 +4,6 @@ def insert_google_videos_lvl0(cursor, les_id: int, durations: list[str]):
             continue
 
         cursor.execute("""
-            INSERT INTO google_videos_lvl0 (les_id, duration)
+            INSERT INTO google_videos_lvl0 (les_id, Integer)
             VALUES (?, ?)
         """, les_id, duration)
