@@ -17,6 +17,7 @@ from database.repositories.overview import insert_overview
 from database.repositories.forums import insert_forums
 from database.repositories.lams_activities import insert_lams_activities
 from database.repositories.learning_objects import insert_learning_objects
+from database.repositories.lesson_stats import insert_lesson_stats
 
 # Parse JSON lecture data and map it to SQL database.
 def etl_process_json(json_data: dict):
@@ -96,6 +97,13 @@ def etl_process_json(json_data: dict):
                 review_id,
                 json_data["data"].get("LearningObject", [])
             )
+
+            if "Stats" in json_data["data"] and json_data["data"]["Stats"]:
+                insert_lesson_stats(
+                    cursor,
+                    review_id,
+                    json_data["data"]["Stats"]
+                )
     finally:
         conn.close()
         print(f"Processed file: {json_data.get("driveFileName", "N/A")}")
