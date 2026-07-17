@@ -22,8 +22,9 @@ def main():
                 if not json_data or "data" not in json_data or not json_data["data"]:
                     continue
 
-                etl_process_json(json_data)
                 counter += 1
+                etl_process_json(json_data)
+                print(f"Processed file: {json_data.get("driveFileName", "N/A")} (#{counter})")
         except (json.JSONDecodeError, PermissionError) as e:
             print(f"Error loading {file_path.name}: {e}")
     print(f"Done! Processed {counter} JSON files.")

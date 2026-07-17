@@ -106,4 +106,3 @@ def etl_process_json(json_data: dict):
                 )
     finally:
         conn.close()
-        print(f"Processed file: {json_data.get("driveFileName", "N/A")}")

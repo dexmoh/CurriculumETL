@@ -3,7 +3,7 @@ from database.repositories.pokazne_vezbe_trajanje import insert_pokazne_vezbe_tr
 from database.repositories.individualne_vezbe_trajanje import insert_individualne_vezbe_trajanje
 from database.repositories.domaci_zadatak_trajanje import insert_domaci_zadatak_trajanje
 
-def insert_lesson_stats(cursor, les_id: int, stats: dict):
+def insert_lesson_stats(cursor, les_id: int, stats: dict) -> int:
     cursor.execute("""
         INSERT INTO lesson_stats (
             les_id,
@@ -67,3 +67,5 @@ def insert_lesson_stats(cursor, les_id: int, stats: dict):
     dz_durations = stats.get("DomaciZadatakTrajanje", [])
     if dz_durations:
         insert_domaci_zadatak_trajanje(cursor, lesson_stats_id, dz_durations)
+
+    return lesson_stats_id
