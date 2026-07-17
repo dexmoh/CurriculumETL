@@ -1,3 +1,8 @@
+from database.repositories.zadatak_za_samostalni_rad_trajanje import insert_zadatak_za_samostalni_rad_trajanje
+from database.repositories.pokazne_vezbe_trajanje import insert_pokazne_vezbe_trajanje
+from database.repositories.individualne_vezbe_trajanje import insert_individualne_vezbe_trajanje
+from database.repositories.domaci_zadatak_trajanje import insert_domaci_zadatak_trajanje
+
 def insert_lesson_stats(cursor, les_id: int, stats: dict):
     cursor.execute("""
         INSERT INTO lesson_stats (
@@ -46,3 +51,19 @@ def insert_lesson_stats(cursor, les_id: int, stats: dict):
     )
 
     lesson_stats_id: int = cursor.fetchone()[0]
+
+    zzsr_durations = stats.get("ZadatakZaSamostalniRadTrajanje", [])
+    if zzsr_durations:
+        insert_zadatak_za_samostalni_rad_trajanje(cursor, lesson_stats_id, zzsr_durations)
+
+    pv_durations = stats.get("PokazneVezbeTrajanje", [])
+    if pv_durations:
+        insert_pokazne_vezbe_trajanje(cursor, lesson_stats_id, pv_durations)
+
+    iv_durations = stats.get("IndividualneVezbeTrajanje", [])
+    if iv_durations:
+        insert_individualne_vezbe_trajanje(cursor, lesson_stats_id, iv_durations)
+
+    dz_durations = stats.get("DomaciZadatakTrajanje", [])
+    if dz_durations:
+        insert_domaci_zadatak_trajanje(cursor, lesson_stats_id, dz_durations)
