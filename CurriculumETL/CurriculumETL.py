@@ -1,13 +1,21 @@
 ﻿import json
 from pathlib import Path
 from services.etl_service import etl_process_json
+from services.drive_downloader_service import download_drive_data
 
-DATA_DIR: str = "data" # Directory where JSON files are stored.
+# Directory where JSON files are stored.
+JSON_DATA_DIR: str = "data"
+
+# Set this to True if you don't already have all JSON files downloaded inside JSON_DATA_DIR.
+DOWNLOAD_DATA_BEFORE_PROCESSING: bool = False
 
 def main():
     print("Starting Lesson ETL validation...")
 
-    directory = Path(DATA_DIR)
+    if DOWNLOAD_DATA_BEFORE_PROCESSING:
+        download_drive_data(JSON_DATA_DIR)
+
+    directory = Path(JSON_DATA_DIR)
 
     if not directory.exists():
         print(f"Error: JSON data directory doesn't exist.")

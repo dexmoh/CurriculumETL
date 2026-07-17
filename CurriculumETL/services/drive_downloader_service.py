@@ -10,17 +10,20 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 
-SERVICE_ACCOUNT_JSON = r"curriculumetl-9019948c547c.json"
-FOLDER_ID: str       = "1bSOM6vmbmylWbWCqgAnXPiBLRCF7xs4b"
-SCOPES: list[str]    = ['https://www.googleapis.com/auth/drive.readonly']
-DOWNLOAD_DIR: str    = "data" # Where should the files be stored.
+SERVICE_ACCOUNT_JSON: str = "curriculumetl-9019948c547c.json"
+FOLDER_ID: str            = "1bSOM6vmbmylWbWCqgAnXPiBLRCF7xs4b"
+SCOPES: list[str]         = ['https://www.googleapis.com/auth/drive.readonly']
+DOWNLOAD_DIR: str         = "data" # Where should the files be stored.
 
 # Download all JSON files from Google Drive and store them locally.
-def download_drive_data(download_dir: str = DOWNLOAD_DIR):
+def download_drive_data(
+        download_dir: str = DOWNLOAD_DIR,
+        service_acc_json: str = SERVICE_ACCOUNT_JSON
+):
     # Fetch Google service.
     print("Creating Google drive service...")
     creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_JSON, scopes=SCOPES
+        service_acc_json, scopes=SCOPES
     )
     service = build('drive', 'v3', credentials=creds)
 
