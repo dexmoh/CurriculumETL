@@ -1,6 +1,6 @@
 import pyodbc
 
-def get_connection():
+def get_connection() -> pyodbc.Connection:
     connection_string = (
         "DRIVER={ODBC Driver 17 for SQL Server};"
         "SERVER=localhost\\SQLEXPRESS;"

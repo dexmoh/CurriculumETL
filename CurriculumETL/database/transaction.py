@@ -1,8 +1,11 @@
-class TransactionManager:
-    def __init__(self, connection):
-        self.conn = connection
+from pyodbc import Connection
+from pyodbc import Cursor
 
-    def __enter__(self):
+class TransactionManager:
+    def __init__(self, connection: Connection):
+        self.conn: Connection = connection
+
+    def __enter__(self) -> Cursor:
         self.conn.autocommit = False
         return self.conn.cursor()
 
