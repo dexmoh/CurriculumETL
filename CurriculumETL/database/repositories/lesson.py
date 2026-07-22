@@ -23,16 +23,19 @@ def search_lessons(
         course_code: str = "",
         title: str = "",
         lesson_number: str = "",
-        academic_year: str = ""
+        academic_year: str = "",
+        author: str = ""
 ) -> list[Row]:
-    if not course_code:
+    if (not isinstance(course_code, str)) or (course_code is None):
         course_code = ""
-    if not title:
+    if (not isinstance(title, str)) or (title is None):
         title = ""
-    if not lesson_number:
+    if (not isinstance(lesson_number, str)) or (lesson_number is None):
         lesson_number = ""
-    if not academic_year:
+    if (not isinstance(academic_year, str)) or (academic_year is None):
         academic_year = ""
+    if (not isinstance(author, str)) or (author is None):
+        author = ""
 
     cursor.execute("""
         SELECT TOP (500)
@@ -49,13 +52,15 @@ def search_lessons(
             course_code LIKE ? AND
             title LIKE ? AND
             lesson_number LIKE ? AND
-            academic_year LIKE ?
+            academic_year LIKE ? AND
+            lesson_author LIKE ?
         ORDER BY course_code ASC, lesson_number ASC
     """,
         f"%{course_code}%",
         f"%{title}%",
         f"%{lesson_number}%",
-        f"%{academic_year}%"
+        f"%{academic_year}%",
+        f"%{author}%"
     )
 
     return cursor.fetchall()

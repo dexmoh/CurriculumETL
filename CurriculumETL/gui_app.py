@@ -20,30 +20,40 @@ class GuiApp:
         search_frame = tk.Frame(main_frame, bd=4, relief=tk.GROOVE)
         search_frame.pack(side=tk.LEFT, anchor="n", padx=5, pady=5, ipadx=5, ipady=5)
 
+        # Course code input.
         tk.Label(search_frame, anchor="w", width=14, text="COURSE CODE").grid(row=0, column=0)
-        tk.Label(search_frame, anchor="w", width=14, text="TITLE").grid(row=1, column=0)
-        tk.Label(search_frame, anchor="w", width=14, text="LESSON NUMBER").grid(row=2, column=0)
-        tk.Label(search_frame, anchor="w", width=14, text="YEAR").grid(row=3, column=0)
-
         self.course_sterm = tk.StringVar()
         tk.Entry(
             search_frame, textvariable=self.course_sterm
         ).grid(row=0, column=1)
 
+        # Title input.
+        tk.Label(search_frame, anchor="w", width=14, text="TITLE").grid(row=1, column=0)
         self.title_sterm = tk.StringVar()
         tk.Entry(
             search_frame, textvariable=self.title_sterm
         ).grid(row=1, column=1)
 
+        # Lesson number input.
+        tk.Label(search_frame, anchor="w", width=14, text="LESSON NUMBER").grid(row=2, column=0)
         self.lesson_sterm = tk.StringVar()
         tk.Entry(
             search_frame, textvariable=self.lesson_sterm
         ).grid(row=2, column=1)
 
+        # Year input.
+        tk.Label(search_frame, anchor="w", width=14, text="YEAR").grid(row=3, column=0)
         self.year_sterm = tk.StringVar()
         tk.Entry(
             search_frame, textvariable=self.year_sterm
         ).grid(row=3, column=1)
+
+        # Author input.
+        tk.Label(search_frame, anchor="w", width=14, text="AUTHOR").grid(row=4, column=0)
+        self.author_sterm = tk.StringVar()
+        tk.Entry(
+            search_frame, textvariable=self.author_sterm
+        ).grid(row=4, column=1)
 
         search_btn = tk.Button(
             search_frame,
@@ -51,7 +61,7 @@ class GuiApp:
             command=lambda: self.search()
         )
 
-        search_btn.grid(row=4, column=1, sticky="nsew")
+        search_btn.grid(row=5, column=1, sticky="nsew")
 
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
@@ -75,7 +85,8 @@ class GuiApp:
                     self.course_sterm.get(),
                     self.title_sterm.get(),
                     self.lesson_sterm.get(),
-                    self.year_sterm.get()
+                    self.year_sterm.get(),
+                    self.author_sterm.get()
                 )
 
                 self.tree.delete(*self.tree.get_children())
