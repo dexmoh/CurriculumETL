@@ -7,6 +7,8 @@ from database.db import get_connection
 from database.transaction import TransactionManager
 from database.repositories.lesson import search_lessons
 from database.repositories.lesson import get_lesson_by_id
+from database.repositories.lesson_version import get_lesson_version
+from database.repositories.lesson_review import get_lesson_review
 
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
@@ -161,6 +163,37 @@ class GuiApp:
                 self.tree.insert(
                     focus, "end",
                     text=f"PDF generated: {get_sanitized(lesson_data.pdf_generated)}"
+                )
+
+                ### FILE INFO ###
+                version_data = get_lesson_version(cursor, lesson_id)
+                if not version_data:
+                    return
+
+                file_info_tab: str = self.tree.insert(focus, "end", text="File Info")
+
+                self.tree.insert(
+                    file_info_tab, "end",
+                    text=f"File ID: {get_sanitized(version_data.fileId, True)}"
+                )
+
+                review_data = get_lesson_review(cursor, version_data.id)
+                if not review_data:
+                    return
+
+                self.tree.insert(
+                    file_info_tab, "end",
+                    text=f"JSON file name: {get_sanitized(review_data.json_file_name, True)}"
+                )
+
+                self.tree.insert(
+                    file_info_tab, "end",
+                    text=f"Drive file ID: {get_sanitized(review_data.drive_file_id, True)}"
+                )
+
+                self.tree.insert(
+                    file_info_tab, "end",
+                    text=f"Imported at: {get_sanitized(review_data.imported_at)}"
                 )
         finally:
             conn.close()

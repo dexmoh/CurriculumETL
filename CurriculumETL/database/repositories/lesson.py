@@ -38,7 +38,7 @@ def search_lessons(
         author = ""
 
     cursor.execute("""
-        SELECT TOP (500)
+        SELECT TOP (1000)
             id,
             course_code,
             title,
