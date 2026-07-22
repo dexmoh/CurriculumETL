@@ -64,3 +64,23 @@ def search_lessons(
     )
 
     return cursor.fetchall()
+
+def get_lesson_by_id(cursor: Cursor, id: int) -> Row | None:
+    if (not isinstance(id, int)) or (id < 1):
+        return None
+
+    cursor.execute("""
+        SELECT
+            id,
+            course_code,
+            title,
+            academic_year,
+            lesson_number,
+            pdf_generated,
+            lesson_author,
+            naucno_polje
+        FROM lesson
+        WHERE id = ?
+    """, id)
+
+    return cursor.fetchone()

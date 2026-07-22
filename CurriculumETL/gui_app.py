@@ -6,6 +6,7 @@ from pathlib import Path
 from database.db import get_connection
 from database.transaction import TransactionManager
 from database.repositories.lesson import search_lessons
+from database.repositories.lesson import get_lesson_by_id
 
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
@@ -77,6 +78,7 @@ class GuiApp:
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
         self.tree.tag_bind("lesson", "<<TreeviewOpen>>", self.on_row_expand)
+        self.tree.tag_bind("lesson", "<<TreeviewClose>>", self.on_row_collapse)
         self.tree.tag_configure("lesson", foreground="maroon")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10, side=tk.LEFT)
 
@@ -120,30 +122,57 @@ class GuiApp:
                         text=f"#{id} - {course_code} - {lesson_number} - {academic_year} - {title}"
                     )
 
-                    self.tree.insert(
-                        id, "end",
-                        text=f"Author: {get_sanitized(row.lesson_author)}"
-                    )
-
-                    self.tree.insert(
-                        id, "end",
-                        text=f"Science field: {get_sanitized(row.naucno_polje)}"
-                    )
-
-                    self.tree.insert(
-                        id, "end",
-                        text=f"PDF generated: {get_sanitized(row.pdf_generated)}"
-                    )
+                    self.tree.insert(id, "end", text="Loading...")
         finally:
             conn.close()
 
-    # Called when user tries to expand the lesson item.
+    # Called when user expands a lesson item.
     def on_row_expand(self, event):
         focus: str = self.tree.focus()
         if not focus:
             return
 
-        self.tree.insert(focus, "end", text="Hello")
+        lesson_id: int = 0
+        try:
+            lesson_id = int(focus)
+        except ValueError:
+            return
+
+        conn = get_connection()
+
+        try:
+            with TransactionManager(conn) as cursor:
+                lesson_data = get_lesson_by_id(cursor, lesson_id)
+                if not lesson_data:
+                    return
+
+                self.tree.delete(*self.tree.get_children(focus))
+
+                self.tree.insert(
+                    focus, "end",
+                    text=f"Author: {get_sanitized(lesson_data.lesson_author)}"
+                )
+
+                self.tree.insert(
+                    focus, "end",
+                    text=f"Science field: {get_sanitized(lesson_data.naucno_polje)}"
+                )
+
+                self.tree.insert(
+                    focus, "end",
+                    text=f"PDF generated: {get_sanitized(lesson_data.pdf_generated)}"
+                )
+        finally:
+            conn.close()
+
+    # Called when user closes an opened lesson item.
+    def on_row_collapse(self, event):
+        focus: str = self.tree.focus()
+        if not focus:
+            return
+        
+        self.tree.delete(*self.tree.get_children(focus))
+        self.tree.insert(focus, "end", text="Loading...")
 
 def get_sanitized(var, add_quotes: bool = False, if_none = "N/A"):
     if var is None:
