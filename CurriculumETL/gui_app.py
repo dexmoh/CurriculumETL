@@ -10,6 +10,7 @@ from database.repositories.lesson import get_lesson_by_id
 from database.repositories.lesson_version import get_lesson_version
 from database.repositories.lesson_review import get_lesson_review
 from database.repositories.overview import get_overview
+from database.repositories.summary import get_summary
 
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
@@ -213,6 +214,21 @@ class GuiApp:
                         text=f"Title: {get_sanitized(overview_data.overview_title, True)}"
                     )
 
+                ### SUMMARY TAB ###
+                summary_data = get_summary(cursor, review_data.id)
+
+                if summary_data:
+                    summary_tab: str = self.tree.insert(focus, "end", text="Summary")
+
+                    self.tree.insert(
+                        summary_tab, "end",
+                        text=f"ID: {get_sanitized(summary_data.summary_id)}"
+                    )
+
+                    self.tree.insert(
+                        summary_tab, "end",
+                        text=f"Title: {get_sanitized(summary_data.summary_title, True)}"
+                    )
         finally:
             conn.close()
 
