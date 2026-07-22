@@ -11,6 +11,7 @@ from database.repositories.lesson_version import get_lesson_version
 from database.repositories.lesson_review import get_lesson_review
 from database.repositories.overview import get_overview
 from database.repositories.summary import get_summary
+from database.repositories.forums import get_forums
 
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
@@ -235,6 +236,31 @@ class GuiApp:
                         summary_tab, "end",
                         text=f"Title: {get_sanitized(summary_data.summary_title, True)}"
                     )
+
+                ### FORUMS TAB ###
+                forums_data = get_forums(cursor, review_data.id)
+
+                if forums_data:
+                    forums_tab: str = self.tree.insert(focus, "end", text="Forums")
+
+                    for forum in forums_data:
+                        if not forum:
+                            continue
+
+                        forum_id: str = self.tree.insert(
+                            forums_tab, "end",
+                            text=get_sanitized(forum.tema, True)
+                        )
+
+                        self.tree.insert(
+                            forum_id, "end",
+                            text=f"Description: {get_sanitized(forum.opis_teme, True)}"
+                        )
+
+                        self.tree.insert(
+                            forum_id, "end",
+                            text=f"After summary: {get_sanitized(forum.after_summary)}"
+                        )
         finally:
             conn.close()
 
