@@ -22,6 +22,7 @@ class GuiApp:
         self.root: tk.Tk = tk.Tk()
         self.root.geometry(WINDOW_SIZE)
         self.root.title(WINDOW_TITLE)
+        self.root.bind("<Return>", self.on_enter_pressed)
 
         if THEME in ttk.Style().theme_names():
             ttk.Style().theme_use(THEME)
@@ -77,11 +78,11 @@ class GuiApp:
         # Search button.
         search_btn = tk.Button(
             search_frame,
-            text="Search",
+            text="SEARCH",
             command=lambda: self.search()
         )
 
-        search_btn.grid(row=5, column=1, sticky="nsew")
+        search_btn.grid(row=5, column=1, pady=(5, 0), sticky="nsew")
 
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
@@ -244,6 +245,10 @@ class GuiApp:
         
         self.tree.delete(*self.tree.get_children(focus))
         self.tree.insert(focus, "end", text="Loading...")
+
+    # Called when user presses enter.
+    def on_enter_pressed(self, event):
+        self.search()
 
 def get_sanitized(var, add_quotes: bool = False, if_none = "N/A"):
     if var is None:
