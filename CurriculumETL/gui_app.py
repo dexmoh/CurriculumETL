@@ -6,11 +6,12 @@ from database.transaction import TransactionManager
 from database.repositories.lesson import search_lessons
 
 WINDOW_TITLE: str = "Lesson Search"
+WINDOW_SIZE: str = "1000x600"
 
 class GuiApp:
     def __init__(self):
         self.root: tk.Tk = tk.Tk()
-        self.root.geometry("1000x600")
+        self.root.geometry(WINDOW_SIZE)
         self.root.title(WINDOW_TITLE)
 
         main_frame = tk.Frame(self.root, bd=4, relief=tk.GROOVE)
@@ -55,6 +56,7 @@ class GuiApp:
             search_frame, textvariable=self.author_sterm
         ).grid(row=4, column=1)
 
+        # Search button.
         search_btn = tk.Button(
             search_frame,
             text="Search",
@@ -65,7 +67,8 @@ class GuiApp:
 
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
-        self.tree.bind("<<TreeviewOpen>>", self.on_row_expand)
+        self.tree.tag_bind("lesson", "<<TreeviewOpen>>", self.on_row_expand)
+        self.tree.tag_configure("lesson", foreground="maroon")
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10, side=tk.LEFT)
 
         scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=self.tree.yview)
@@ -75,6 +78,7 @@ class GuiApp:
     def run(self):
         self.root.mainloop()
 
+    # Called when user presses the search button.
     def search(self):
         conn = get_connection()
 
@@ -103,6 +107,7 @@ class GuiApp:
 
                     self.tree.insert(
                         "", "end", id,
+                        tags=["lesson"],
                         text=f"#{id} - {course_code} - {lesson_number} - {academic_year} - {title}"
                     )
 
@@ -123,8 +128,12 @@ class GuiApp:
         finally:
             conn.close()
 
+    # Called when user tries to expand the lesson item.
     def on_row_expand(self, event):
-        focus = self.tree.focus()
+        focus: str = self.tree.focus()
+        if not focus:
+            return
+
         self.tree.insert(focus, "end", text="Hello")
 
 def get_sanitized(var, add_quotes: bool = False, if_none = "N/A"):
