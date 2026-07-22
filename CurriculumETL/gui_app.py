@@ -1,18 +1,27 @@
 import tkinter as tk
 from tkinter import ttk
 
+from pathlib import Path
+
 from database.db import get_connection
 from database.transaction import TransactionManager
 from database.repositories.lesson import search_lessons
 
-WINDOW_TITLE: str = "Lesson Search"
-WINDOW_SIZE: str = "1000x600"
+WINDOW_TITLE: str     = "Lesson Search"
+WINDOW_SIZE: str      = "1000x600"
+WINDOW_ICON_PATH: str = "icon.png"
 
 class GuiApp:
     def __init__(self):
         self.root: tk.Tk = tk.Tk()
         self.root.geometry(WINDOW_SIZE)
         self.root.title(WINDOW_TITLE)
+
+        # Window icon.
+        if Path(WINDOW_ICON_PATH).is_file():
+            self.root.iconphoto(
+                True, tk.PhotoImage(file=WINDOW_ICON_PATH)
+            )
 
         main_frame = tk.Frame(self.root, bd=4, relief=tk.GROOVE)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
