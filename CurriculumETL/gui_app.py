@@ -15,12 +15,16 @@ from database.repositories.summary import get_summary
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
 WINDOW_ICON_PATH: str = "icon.png"
+THEME: str            = "alt"
 
 class GuiApp:
     def __init__(self):
         self.root: tk.Tk = tk.Tk()
         self.root.geometry(WINDOW_SIZE)
         self.root.title(WINDOW_TITLE)
+
+        if THEME in ttk.Style().theme_names():
+            ttk.Style().theme_use(THEME)
 
         # Window icon.
         if Path(WINDOW_ICON_PATH).is_file():
