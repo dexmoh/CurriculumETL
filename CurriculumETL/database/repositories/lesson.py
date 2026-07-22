@@ -35,19 +35,27 @@ def search_lessons(
         academic_year = ""
 
     cursor.execute("""
-        SELECT TOP (500) id, course_code, title, academic_year, lesson_number, pdf_generated, lesson_author, naucno_polje
+        SELECT TOP (500)
+            id,
+            course_code,
+            title,
+            academic_year,
+            lesson_number,
+            pdf_generated,
+            lesson_author,
+            naucno_polje
         FROM lesson
         WHERE
-            (course_code LIKE ? OR ? = '') AND
-            (title LIKE ? OR ? = '') AND
-            (lesson_number LIKE ? OR ? = '') AND
-            (academic_year LIKE ? OR ? = '')
+            course_code LIKE ? AND
+            title LIKE ? AND
+            lesson_number LIKE ? AND
+            academic_year LIKE ?
         ORDER BY course_code ASC, lesson_number ASC
     """,
-        f"%{course_code}%", course_code,
-        f"%{title}%", title,
-        f"%{lesson_number}%", lesson_number,
-        f"%{academic_year}%", academic_year
+        f"%{course_code}%",
+        f"%{title}%",
+        f"%{lesson_number}%",
+        f"%{academic_year}%"
     )
 
     return cursor.fetchall()
