@@ -1,9 +1,11 @@
+from pyodbc import Cursor
+
 from database.repositories.zadatak_za_samostalni_rad_trajanje import insert_zadatak_za_samostalni_rad_trajanje
 from database.repositories.pokazne_vezbe_trajanje import insert_pokazne_vezbe_trajanje
 from database.repositories.individualne_vezbe_trajanje import insert_individualne_vezbe_trajanje
 from database.repositories.domaci_zadatak_trajanje import insert_domaci_zadatak_trajanje
 
-def insert_lesson_stats(cursor, les_id: int, stats: dict) -> int:
+def insert_lesson_stats(cursor: Cursor, les_id: int, stats: dict) -> int:
     cursor.execute("""
         INSERT INTO lesson_stats (
             les_id,

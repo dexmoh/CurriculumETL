@@ -1,4 +1,6 @@
-def insert_yt_links(cursor, les_id: int, links: list[str]):
+from pyodbc import Cursor
+
+def insert_yt_links(cursor: Cursor, les_id: int, links: list[str]):
     for link in links:
         if not link or link == "":
             continue

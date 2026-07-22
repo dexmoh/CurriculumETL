@@ -1,4 +1,10 @@
-def insert_google_videos_lvl3(cursor, les_id: int, durations: list[str]):
+from pyodbc import Cursor
+
+def insert_google_videos_lvl3(
+        cursor: Cursor,
+        les_id: int,
+        durations: list[str]
+):
     for duration in durations:
         if not duration or duration == "":
             continue

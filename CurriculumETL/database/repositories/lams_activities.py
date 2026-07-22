@@ -1,4 +1,6 @@
-def insert_lams_activities(cursor, les_id: int, activities: list):
+from pyodbc import Cursor
+
+def insert_lams_activities(cursor: Cursor, les_id: int, activities: list):
     for activity in activities:
         if not activity:
             continue

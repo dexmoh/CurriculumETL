@@ -1,6 +1,11 @@
+from pyodbc import Cursor
 from database.repositories.learning_object_subobjects import insert_learning_object_subobjects
 
-def insert_learning_objects(cursor, les_id: int, learning_objects: list) -> int:
+def insert_learning_objects(
+        cursor: Cursor,
+        les_id: int,
+        learning_objects: list
+) -> int:
     for object in learning_objects:
         if not object:
             continue

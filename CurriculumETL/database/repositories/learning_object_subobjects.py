@@ -1,4 +1,10 @@
-def insert_learning_object_subobjects(cursor, lea_id: int, subobjects: list):
+from pyodbc import Cursor
+
+def insert_learning_object_subobjects(
+        cursor: Cursor,
+        lea_id: int,
+        subobjects: list
+):
     for subobject in subobjects:
         if not subobject:
             continue

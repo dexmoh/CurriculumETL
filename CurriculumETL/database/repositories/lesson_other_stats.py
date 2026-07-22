@@ -1,4 +1,10 @@
-def insert_lesson_other_stats(cursor, lesson_id: int, stats_json: dict) -> int:
+from pyodbc import Cursor
+
+def insert_lesson_other_stats(
+        cursor: Cursor,
+        lesson_id: int,
+        stats_json: dict
+) -> int:
     cursor.execute("""
         INSERT INTO lesson_other_stats (
             les_id,

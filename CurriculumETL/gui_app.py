@@ -20,6 +20,7 @@ THEME: str            = "alt"
 
 class GuiApp:
     def __init__(self):
+        ### GUI WINDOW INIT ###
         self.root: tk.Tk = tk.Tk()
         self.root.geometry(WINDOW_SIZE)
         self.root.title(WINDOW_TITLE)
