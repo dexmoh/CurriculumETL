@@ -9,6 +9,7 @@ from database.repositories.lesson import search_lessons
 from database.repositories.lesson import get_lesson_by_id
 from database.repositories.lesson_version import get_lesson_version
 from database.repositories.lesson_review import get_lesson_review
+from database.repositories.overview import get_overview
 
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
@@ -165,7 +166,7 @@ class GuiApp:
                     text=f"PDF generated: {get_sanitized(lesson_data.pdf_generated)}"
                 )
 
-                ### FILE INFO ###
+                ### FILE INFO TAB ###
                 version_data = get_lesson_version(cursor, lesson_id)
                 if not version_data:
                     return
@@ -195,6 +196,23 @@ class GuiApp:
                     file_info_tab, "end",
                     text=f"Imported at: {get_sanitized(review_data.imported_at)}"
                 )
+
+                ### OVERVIEW TAB ###
+                overview_data = get_overview(cursor, review_data.id)
+
+                if overview_data:
+                    overview_tab: str = self.tree.insert(focus, "end", text="Overview")
+
+                    self.tree.insert(
+                        overview_tab, "end",
+                        text=f"ID: {get_sanitized(overview_data.overview_id)}"
+                    )
+
+                    self.tree.insert(
+                        overview_tab, "end",
+                        text=f"Title: {get_sanitized(overview_data.overview_title, True)}"
+                    )
+
         finally:
             conn.close()
 
