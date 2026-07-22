@@ -86,6 +86,7 @@ class GuiApp:
 
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
+        self.tree.bind("<Control-c>", self.handle_copy)
         self.tree.tag_bind("lesson", "<<TreeviewOpen>>", self.on_row_expand)
         self.tree.tag_bind("lesson", "<<TreeviewClose>>", self.on_row_collapse)
         self.tree.tag_configure("lesson", foreground="maroon")
@@ -249,6 +250,19 @@ class GuiApp:
     # Called when user presses enter.
     def on_enter_pressed(self, event):
         self.search()
+
+    # Called when user presses Ctrl+C.
+    def handle_copy(self, event):
+        focus: str = self.tree.focus()
+        if not focus:
+            return
+
+        text: str = self.tree.item(focus, "text")
+        if not text:
+            return
+
+        self.root.clipboard_clear()
+        self.root.clipboard_append(text)
 
 def get_sanitized(var, add_quotes: bool = False, if_none = "N/A"):
     if var is None:
