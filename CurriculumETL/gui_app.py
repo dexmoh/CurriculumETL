@@ -88,10 +88,10 @@ class GuiApp:
         search_btn.grid(row=5, column=1, pady=(5, 0), sticky="nsew")
 
         ### SEARCH RESULTS LABEL ###
-        self.search_result_label = tk.Label(
+        self.info_label = tk.Label(
             main_frame, anchor="center", width=100, text=""
         )
-        self.search_result_label.pack(side=tk.BOTTOM)
+        self.info_label.pack(side=tk.BOTTOM)
 
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
@@ -147,7 +147,7 @@ class GuiApp:
 
                     self.tree.insert(id, "end", text="Loading...")
 
-                self.search_result_label.config(
+                self.info_label.config(
                     text=f"Found {len(result)} results in {round(time.perf_counter() - start_time, 2)} seconds."
                 )
         finally:

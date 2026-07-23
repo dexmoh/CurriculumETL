@@ -38,15 +38,12 @@ def search_lessons(
         author = ""
 
     cursor.execute("""
-        SELECT TOP (1000)
+        SELECT TOP (5000)
             id,
             course_code,
             title,
             academic_year,
-            lesson_number,
-            pdf_generated,
-            lesson_author,
-            naucno_polje
+            lesson_number
         FROM lesson
         WHERE
             course_code LIKE ? AND
