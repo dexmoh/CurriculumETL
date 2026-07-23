@@ -1,4 +1,5 @@
 from pyodbc import Cursor
+from pyodbc import Row
 
 from database.repositories.zadatak_za_samostalni_rad_trajanje import insert_zadatak_za_samostalni_rad_trajanje
 from database.repositories.pokazne_vezbe_trajanje import insert_pokazne_vezbe_trajanje
@@ -71,3 +72,35 @@ def insert_lesson_stats(cursor: Cursor, les_id: int, stats: dict) -> int:
         insert_domaci_zadatak_trajanje(cursor, lesson_stats_id, dz_durations)
 
     return lesson_stats_id
+
+def get_stats(cursor: Cursor, review_id: int) -> Row | None:
+    if (not isinstance(review_id, int)) or (review_id < 1):
+        return None
+
+    cursor.execute("""
+        SELECT
+            id,
+            les_id,
+            total_activity_counter,
+            forum_counter,
+            multiple_choice_counter,
+            assessment_counter,
+            q_and_a_counter,
+            activity_after_summary_counter,
+            forum_after_summary_counter,
+            no_ou_predavanja,
+            no_ou_pokazne_vezbe,
+            no_ou_individualne_vezbe,
+            no_ou_zadatak_za_samostalni_rad,
+            no_ou_domaci_zadatak,
+            no_ou_projekat,
+            has_pokazne_vezbe,
+            has_individualne_vezbe,
+            has_zadatak_za_samostalni_rad,
+            has_domaci_zadatak,
+            has_projekat
+        FROM lesson_stats
+        WHERE les_id = ?
+    """, review_id)
+
+    return cursor.fetchone()

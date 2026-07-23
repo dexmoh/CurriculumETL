@@ -13,6 +13,7 @@ from database.repositories.lesson_review import get_lesson_review
 from database.repositories.overview import get_overview
 from database.repositories.summary import get_summary
 from database.repositories.forums import get_forums
+from database.repositories.lesson_stats import get_stats
 
 WINDOW_TITLE: str     = "Lesson Search"
 WINDOW_SIZE: str      = "1000x600"
@@ -279,6 +280,102 @@ class GuiApp:
                             forum_id, "end",
                             text=f"After summary: {sanitize(forum.after_summary)}"
                         )
+
+                ### STATS TAB ###
+                stats_data = get_stats(cursor, review_data.id)
+
+                if stats_data:
+                    stats_tab: str = self.tree.insert(focus, "end", text="Stats")
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Total activity counter: {sanitize(stats_data.total_activity_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Forum counter: {sanitize(stats_data.forum_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Multiple choice counter: {sanitize(stats_data.multiple_choice_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Assessment counter: {sanitize(stats_data.assessment_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Q&A counter: {sanitize(stats_data.q_and_a_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Activity after summary counter: {sanitize(stats_data.activity_after_summary_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Forum after summary counter: {sanitize(stats_data.forum_after_summary_counter)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Number of predavanja: {sanitize(stats_data.no_ou_predavanja)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Number of pokazne vežbe: {sanitize(stats_data.no_ou_pokazne_vezbe)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Number of individualne vežbe: {sanitize(stats_data.no_ou_individualne_vezbe)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Number of zadatak za samostalni rad: {sanitize(stats_data.no_ou_zadatak_za_samostalni_rad)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Number of domaći zadatak: {sanitize(stats_data.no_ou_domaci_zadatak)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Number of projekat: {sanitize(stats_data.no_ou_projekat)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Has pokazne vežbe: {sanitize(stats_data.has_pokazne_vezbe)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Has individualne vežbe: {sanitize(stats_data.has_individualne_vezbe)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Has zadatak za samostalni rad: {sanitize(stats_data.has_zadatak_za_samostalni_rad)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Has domaći zadatak: {sanitize(stats_data.has_domaci_zadatak)}"
+                    )
+
+                    self.tree.insert(
+                        stats_tab, "end",
+                        text=f"Has projekat: {sanitize(stats_data.has_projekat)}"
+                    )
         finally:
             conn.close()
 
@@ -308,7 +405,7 @@ class GuiApp:
 
 # Helper function for cleaning up variables fetched from the database.
 def sanitize(var, add_quotes: bool = False, if_none = "N/A"):
-    if var is None:
+    if var is None or var == "":
         return if_none
     elif add_quotes:
         return f"\"{str(var)}\""
