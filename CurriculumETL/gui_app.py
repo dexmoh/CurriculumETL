@@ -25,7 +25,7 @@ class GuiApp:
         self.root: tk.Tk = tk.Tk()
         self.root.geometry(WINDOW_SIZE)
         self.root.title(WINDOW_TITLE)
-        self.root.bind("<Return>", self.on_enter_pressed)
+        self.root.bind("<Return>", lambda x: self.search())
 
         if THEME in ttk.Style().theme_names():
             ttk.Style().theme_use(THEME)
@@ -105,10 +105,11 @@ class GuiApp:
         scrollbar.pack(side=tk.LEFT, fill="y")
         self.tree.configure(yscrollcommand=scrollbar.set)
 
+    # Run the application and show the window.
     def run(self):
         self.root.mainloop()
 
-    # Called when user presses the search button.
+    # Called when user presses enter or the search button.
     def search(self):
         start_time = time.perf_counter()
         conn = get_connection()
@@ -134,10 +135,10 @@ class GuiApp:
                     if not id:
                         continue
 
-                    course_code = get_sanitized(row.course_code)
-                    lesson_number = get_sanitized(row.lesson_number)
-                    academic_year = get_sanitized(row.academic_year)
-                    title = get_sanitized(row.title, True)
+                    course_code = sanitize(row.course_code)
+                    lesson_number = sanitize(row.lesson_number)
+                    academic_year = sanitize(row.academic_year)
+                    title = sanitize(row.title, True)
 
                     self.tree.insert(
                         "", "end", id,
@@ -153,6 +154,7 @@ class GuiApp:
         finally:
             conn.close()
 
+    # Load all lesson data when user expands a lesson item.
     # Called when user expands a lesson item.
     def on_row_expand(self, event):
         focus: str = self.tree.focus()
@@ -177,17 +179,17 @@ class GuiApp:
 
                 self.tree.insert(
                     focus, "end",
-                    text=f"Author: {get_sanitized(lesson_data.lesson_author)}"
+                    text=f"Author: {sanitize(lesson_data.lesson_author)}"
                 )
 
                 self.tree.insert(
                     focus, "end",
-                    text=f"Science field: {get_sanitized(lesson_data.naucno_polje)}"
+                    text=f"Science field: {sanitize(lesson_data.naucno_polje)}"
                 )
 
                 self.tree.insert(
                     focus, "end",
-                    text=f"PDF generated: {get_sanitized(lesson_data.pdf_generated)}"
+                    text=f"PDF generated: {sanitize(lesson_data.pdf_generated)}"
                 )
 
                 ### FILE INFO TAB ###
@@ -199,7 +201,7 @@ class GuiApp:
 
                 self.tree.insert(
                     file_info_tab, "end",
-                    text=f"File ID: {get_sanitized(version_data.fileId, True)}"
+                    text=f"File ID: {sanitize(version_data.fileId, True)}"
                 )
 
                 review_data = get_lesson_review(cursor, version_data.id)
@@ -208,17 +210,17 @@ class GuiApp:
 
                 self.tree.insert(
                     file_info_tab, "end",
-                    text=f"JSON file name: {get_sanitized(review_data.json_file_name, True)}"
+                    text=f"JSON file name: {sanitize(review_data.json_file_name, True)}"
                 )
 
                 self.tree.insert(
                     file_info_tab, "end",
-                    text=f"Drive file ID: {get_sanitized(review_data.drive_file_id, True)}"
+                    text=f"Drive file ID: {sanitize(review_data.drive_file_id, True)}"
                 )
 
                 self.tree.insert(
                     file_info_tab, "end",
-                    text=f"Imported at: {get_sanitized(review_data.imported_at)}"
+                    text=f"Imported at: {sanitize(review_data.imported_at)}"
                 )
 
                 ### OVERVIEW TAB ###
@@ -229,12 +231,12 @@ class GuiApp:
 
                     self.tree.insert(
                         overview_tab, "end",
-                        text=f"ID: {get_sanitized(overview_data.overview_id)}"
+                        text=f"ID: {sanitize(overview_data.overview_id)}"
                     )
 
                     self.tree.insert(
                         overview_tab, "end",
-                        text=f"Title: {get_sanitized(overview_data.overview_title, True)}"
+                        text=f"Title: {sanitize(overview_data.overview_title, True)}"
                     )
 
                 ### SUMMARY TAB ###
@@ -245,12 +247,12 @@ class GuiApp:
 
                     self.tree.insert(
                         summary_tab, "end",
-                        text=f"ID: {get_sanitized(summary_data.summary_id)}"
+                        text=f"ID: {sanitize(summary_data.summary_id)}"
                     )
 
                     self.tree.insert(
                         summary_tab, "end",
-                        text=f"Title: {get_sanitized(summary_data.summary_title, True)}"
+                        text=f"Title: {sanitize(summary_data.summary_title, True)}"
                     )
 
                 ### FORUMS TAB ###
@@ -265,21 +267,22 @@ class GuiApp:
 
                         forum_id: str = self.tree.insert(
                             forums_tab, "end",
-                            text=get_sanitized(forum.tema, True)
+                            text=sanitize(forum.tema, True)
                         )
 
                         self.tree.insert(
                             forum_id, "end",
-                            text=f"Description: {get_sanitized(forum.opis_teme, True)}"
+                            text=f"Description: {sanitize(forum.opis_teme, True)}"
                         )
 
                         self.tree.insert(
                             forum_id, "end",
-                            text=f"After summary: {get_sanitized(forum.after_summary)}"
+                            text=f"After summary: {sanitize(forum.after_summary)}"
                         )
         finally:
             conn.close()
 
+    # Unload all additional info for a loaded lesson item.
     # Called when user closes an opened lesson item.
     def on_row_collapse(self, event):
         focus: str = self.tree.focus()
@@ -289,10 +292,7 @@ class GuiApp:
         self.tree.delete(*self.tree.get_children(focus))
         self.tree.insert(focus, "end", text="Loading...")
 
-    # Called when user presses enter.
-    def on_enter_pressed(self, event):
-        self.search()
-
+    # Copy the focused item in the Treeview.
     # Called when user presses Ctrl+C.
     def handle_copy(self, event):
         focus: str = self.tree.focus()
@@ -306,7 +306,8 @@ class GuiApp:
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
 
-def get_sanitized(var, add_quotes: bool = False, if_none = "N/A"):
+# Helper function for cleaning up variables fetched from the database.
+def sanitize(var, add_quotes: bool = False, if_none = "N/A"):
     if var is None:
         return if_none
     elif add_quotes:
