@@ -1,7 +1,8 @@
+import time
+from pathlib import Path
+
 import tkinter as tk
 from tkinter import ttk
-
-from pathlib import Path
 
 from database.db import get_connection
 from database.transaction import TransactionManager
@@ -86,6 +87,12 @@ class GuiApp:
 
         search_btn.grid(row=5, column=1, pady=(5, 0), sticky="nsew")
 
+        ### SEARCH RESULTS LABEL ###
+        self.search_result_label = tk.Label(
+            main_frame, anchor="center", width=100, text=""
+        )
+        self.search_result_label.pack(side=tk.BOTTOM)
+
         ### TREEVIEW PANEL ###
         self.tree = ttk.Treeview(main_frame, show="tree")
         self.tree.bind("<Control-c>", self.handle_copy)
@@ -103,6 +110,7 @@ class GuiApp:
 
     # Called when user presses the search button.
     def search(self):
+        start_time = time.perf_counter()
         conn = get_connection()
 
         try:
@@ -120,7 +128,6 @@ class GuiApp:
 
                 if len(result) < 1:
                     self.tree.insert("", "end", text="No results.")
-                    return
 
                 for row in result:
                     id = row.id
@@ -139,6 +146,10 @@ class GuiApp:
                     )
 
                     self.tree.insert(id, "end", text="Loading...")
+
+                self.search_result_label.config(
+                    text=f"Found {len(result)} results in {round(time.perf_counter() - start_time, 2)} seconds."
+                )
         finally:
             conn.close()
 
