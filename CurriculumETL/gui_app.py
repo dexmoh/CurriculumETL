@@ -118,6 +118,10 @@ class GuiApp:
 
                 self.tree.delete(*self.tree.get_children())
 
+                if len(result) < 1:
+                    self.tree.insert("", "end", text="No results.")
+                    return
+
                 for row in result:
                     id = row.id
                     if not id:
