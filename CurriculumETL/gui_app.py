@@ -79,14 +79,23 @@ class GuiApp:
             search_frame, textvariable=self.author_sterm
         ).grid(row=4, column=1)
 
+        # Clear button.
+        tk.Button(
+            search_frame,
+            text="CLEAR",
+            command=lambda: self.clear_input(),
+            fg="white", bg="slate gray",
+            width=15
+        ).grid(row=5, column=1, pady=(10, 0))
+
         # Search button.
-        search_btn = tk.Button(
+        tk.Button(
             search_frame,
             text="SEARCH",
-            command=lambda: self.search()
-        )
-
-        search_btn.grid(row=5, column=1, pady=(5, 0), sticky="nsew")
+            command=lambda: self.search(),
+            fg="white", bg="sea green",
+            width=15
+        ).grid(row=6, column=1, pady=(5, 0))
 
         ### SEARCH RESULTS LABEL ###
         self.info_label = tk.Label(
@@ -402,6 +411,15 @@ class GuiApp:
 
         self.root.clipboard_clear()
         self.root.clipboard_append(text)
+
+    # Called when user presses the clear button.
+    # Clears all search fields.
+    def clear_input(self):
+        self.course_sterm.set("")
+        self.title_sterm.set("")
+        self.lesson_sterm.set("")
+        self.year_sterm.set("")
+        self.author_sterm.set("")
 
 # Helper function for cleaning up variables fetched from the database.
 def sanitize(var, add_quotes: bool = False, if_none = "N/A"):
