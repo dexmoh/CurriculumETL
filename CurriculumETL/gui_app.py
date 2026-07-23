@@ -12,6 +12,7 @@ from database.repositories.lesson_version import get_lesson_version
 from database.repositories.lesson_review import get_lesson_review
 from database.repositories.overview import get_overview
 from database.repositories.summary import get_summary
+from database.repositories.lams_activities import get_activities
 from database.repositories.forums import get_forums
 from database.repositories.lesson_stats import get_stats
 
@@ -84,7 +85,6 @@ class GuiApp:
             search_frame,
             text="CLEAR",
             command=lambda: self.clear_input(),
-            fg="white", bg="slate gray",
             width=15
         ).grid(row=5, column=1, pady=(10, 0))
 
@@ -264,6 +264,46 @@ class GuiApp:
                         summary_tab, "end",
                         text=f"Title: {sanitize(summary_data.summary_title, True)}"
                     )
+
+                ### LAMS ACTIVITIES TAB ###
+                activities_data = get_activities(cursor, review_data.id)
+
+                if activities_data:
+                    activities_tab: str = self.tree.insert(focus, "end", text="LAMS Activities")
+
+                    for activity in activities_data:
+                        if not activity:
+                            continue
+
+                        activity_id: str = self.tree.insert(
+                            activities_tab, "end",
+                            text=sanitize(activity.activity_title, True)
+                        )
+
+                        self.tree.insert(
+                            activity_id, "end",
+                            text=f"Tool content ID: {sanitize(activity.tool_content_id)}"
+                        )
+
+                        self.tree.insert(
+                            activity_id, "end",
+                            text=f"Tool display name: {sanitize(activity.tool_display_name, True)}"
+                        )
+
+                        self.tree.insert(
+                            activity_id, "end",
+                            text=f"Tool ID: {sanitize(activity.tool_id)}"
+                        )
+
+                        self.tree.insert(
+                            activity_id, "end",
+                            text=f"Parent: {sanitize(activity.parent)}"
+                        )
+
+                        self.tree.insert(
+                            activity_id, "end",
+                            text=f"Activity category ID: {sanitize(activity.activity_category_id)}"
+                        )
 
                 ### FORUMS TAB ###
                 forums_data = get_forums(cursor, review_data.id)
