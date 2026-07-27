@@ -1,11 +1,13 @@
 from pyodbc import Cursor
+from pyodbc import Row
+
 from database.repositories.learning_object_subobjects import insert_learning_object_subobjects
 
 def insert_learning_objects(
         cursor: Cursor,
         les_id: int,
-        learning_objects: list
-) -> int:
+        learning_objects: list[dict]
+):
     for object in learning_objects:
         if not object:
             continue
@@ -64,4 +66,33 @@ def insert_learning_objects(
                 subobjects
             )
 
-        return object_id
+def get_learning_objects(cursor: Cursor, review_id: int) -> list[Row] | None:
+    if (not isinstance(review_id, int)) or (review_id < 1):
+        return None
+
+    cursor.execute("""
+        SELECT
+            id,
+            les_id,
+            number,
+            learning_content_id,
+            title,
+            classification,
+            difficulty_level,
+            keywords,
+            audience,
+            learning_duration,
+            type,
+            curriculum,
+            domain,
+            learning_outcomes,
+            competences,
+            knowledge_topic,
+            learning_object_author,
+            school_year,
+            faculty
+        FROM learning_objects
+        WHERE les_id = ?
+    """, review_id)
+
+    return cursor.fetchall()
