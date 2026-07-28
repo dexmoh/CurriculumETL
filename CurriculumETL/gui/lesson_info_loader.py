@@ -97,14 +97,15 @@ def load_lesson_info(
             if not l_obj:
                 continue
 
+            type_str: str = sanitize(l_obj.type, if_none=None)
+            if not type_str:
+                type_str = ""
+            else:
+                type_str = f"({type_str})"
+
             l_obj_id: str = tree.insert(
                 objects_tab, "end",
-                text=sanitize(l_obj.title, True)
-            )
-
-            tree.insert(
-                l_obj_id, "end",
-                text=f"Number: {sanitize(l_obj.number)}"
+                text=f"{sanitize(l_obj.number)} - {sanitize(l_obj.title, True)} {type_str}"
             )
 
             tree.insert(
@@ -135,11 +136,6 @@ def load_lesson_info(
             tree.insert(
                 l_obj_id, "end",
                 text=f"Learning duration: {sanitize(l_obj.learning_duration)}"
-            )
-
-            tree.insert(
-                l_obj_id, "end",
-                text=f"Type: {sanitize(l_obj.type)}"
             )
 
             tree.insert(
@@ -193,14 +189,15 @@ def load_lesson_info(
                 if not sub:
                     continue
 
+                type_str: str = sanitize(l_obj.type, if_none=None)
+                if not type_str:
+                    type_str = ""
+                else:
+                    type_str = f"({type_str})"
+
                 sub_id: str = tree.insert(
                     subobjects_tab, "end",
-                    text=sanitize(sub.title, True)
-                )
-
-                tree.insert(
-                    sub_id, "end",
-                    text=f"Number: {sanitize(sub.number)}"
+                    text=f"{sanitize(sub.number)} - {sanitize(sub.title, True)} {type_str}"
                 )
 
                 tree.insert(
@@ -231,11 +228,6 @@ def load_lesson_info(
                 tree.insert(
                     sub_id, "end",
                     text=f"Learning duration: {sanitize(sub.learning_duration)}"
-                )
-
-                tree.insert(
-                    sub_id, "end",
-                    text=f"Type: {sanitize(sub.type)}"
                 )
 
                 tree.insert(
