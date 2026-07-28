@@ -1,6 +1,7 @@
 from pyodbc import Cursor
 from tkinter import ttk
 
+from database.repositories.learning_object_subobjects import get_subobjects
 from database.repositories.learning_objects import get_learning_objects
 from database.repositories.lesson_version import get_lesson_version
 from database.repositories.lesson_review import get_lesson_review
@@ -180,6 +181,102 @@ def load_lesson_info(
                 l_obj_id, "end",
                 text=f"Faculty: {sanitize(l_obj.faculty)}"
             )
+
+            ### LEARNING SUBOBJECTS TAB ###
+            subobjects_data = get_subobjects(cursor, l_obj.id)
+            if not subobjects_data:
+                continue
+
+            subobjects_tab: str = tree.insert(l_obj_id, "end", text="Subobjects")
+
+            for sub in subobjects_data:
+                if not sub:
+                    continue
+
+                sub_id: str = tree.insert(
+                    subobjects_tab, "end",
+                    text=sanitize(sub.title, True)
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Number: {sanitize(sub.number)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Learning content ID: {sanitize(sub.learning_content_id)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Classification: {sanitize(sub.classification)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Difficulty level: {sanitize(sub.difficulty_level)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Keywords: {sanitize(sub.keywords, True)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Audience: {sanitize(sub.audience)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Learning duration: {sanitize(sub.learning_duration)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Type: {sanitize(sub.type)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Curriculum: {sanitize(sub.curriculum)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Domain: {sanitize(sub.domain)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Learning outcomes: {sanitize(sub.learning_outcomes)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Competences: {sanitize(sub.competences)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Knowledge topic: {sanitize(sub.knowledge_topic)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Author: {sanitize(sub.subobject_author)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"School year: {sanitize(sub.school_year)}"
+                )
+
+                tree.insert(
+                    sub_id, "end",
+                    text=f"Faculty: {sanitize(sub.faculty)}"
+                )
 
     ### SUMMARY TAB ###
     summary_data = get_summary(cursor, review_data.id)
