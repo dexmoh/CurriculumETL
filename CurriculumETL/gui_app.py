@@ -118,6 +118,12 @@ class GuiApp:
         start_time = time.perf_counter()
         conn = get_connection()
 
+        self.tree.delete(*self.tree.get_children())
+
+        if not conn:
+            self.tree.insert("", "end", text="Couldn't connect to the database.")
+            return
+
         try:
             with TransactionManager(conn) as cursor:
                 result = search_lessons(
@@ -128,8 +134,6 @@ class GuiApp:
                     self.year_sterm.get(),
                     self.author_sterm.get()
                 )
-
-                self.tree.delete(*self.tree.get_children())
 
                 if len(result) < 1:
                     self.tree.insert("", "end", text="No results.")
@@ -172,13 +176,14 @@ class GuiApp:
             return
 
         conn = get_connection()
-        try:
-            with TransactionManager(conn) as cursor:
-                load_lesson_info(
-                    cursor, lesson_id, self.tree
-                )
-        finally:
-            conn.close()
+        if conn:
+            try:
+                with TransactionManager(conn) as cursor:
+                    load_lesson_info(
+                        cursor, lesson_id, self.tree
+                    )
+            finally:
+                conn.close()
 
     # Unload all additional info for a loaded lesson item.
     # Called when user closes an opened lesson item.
