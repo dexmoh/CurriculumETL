@@ -1,4 +1,6 @@
 ﻿import json
+import time
+
 from pathlib import Path
 from gui_app import GuiApp
 from database.db import get_connection
@@ -32,6 +34,8 @@ def main():
         return
 
     counter: int = 0
+    start_time = time.perf_counter()
+
     for file_path in directory.glob("*.json"):
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -48,7 +52,7 @@ def main():
             print(f"Error loading {file_path.name}: {e}")
 
     conn.close()
-    print(f"Done! Processed {counter} JSON files.")
+    print(f"Done! Processed {counter} JSON files in {round(time.perf_counter() - start_time, 2)} seconds.")
 
     if RUN_GUI_AFTER_PROCESSING:
         GuiApp().run()

@@ -1,6 +1,8 @@
 from pyodbc import Cursor
 from tkinter import ttk
 
+from database.db import sanitize
+
 from database.repositories.learning_object_subobjects import get_subobjects
 from database.repositories.learning_objects import get_learning_objects
 from database.repositories.lesson_version import get_lesson_version
@@ -11,7 +13,6 @@ from database.repositories.lesson_stats import get_stats
 from database.repositories.overview import get_overview
 from database.repositories.summary import get_summary
 from database.repositories.forums import get_forums
-from database.db import sanitize
 
 # Load lesson info from the database and display it inside a Treeview.
 def load_lesson_info(
