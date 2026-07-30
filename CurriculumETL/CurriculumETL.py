@@ -1,6 +1,7 @@
 ﻿import json
 from pathlib import Path
 from gui_app import GuiApp
+from database.db import get_connection
 from services.etl_service import etl_process_json
 from services.drive_downloader_service import download_drive_data
 
@@ -22,9 +23,14 @@ def main():
     directory = Path(JSON_DATA_DIR)
 
     if not directory.exists():
-        print(f"Error: JSON data directory doesn't exist.")
+        print(f"ERROR: JSON data directory doesn't exist.")
         return
-    
+
+    conn = get_connection()
+    if not conn:
+        print("ERROR: Couldn't process JSON files because database connection failed.")
+        return
+
     counter: int = 0
     for file_path in directory.glob("*.json"):
         try:
@@ -34,16 +40,14 @@ def main():
                 if not json_data or "data" not in json_data or not json_data["data"]:
                     continue
 
-                etl_process_json(json_data)
+                etl_process_json(conn, json_data)
 
                 counter += 1
                 print(f"Processed file: {json_data.get("driveFileName", "N/A")} (#{counter})")
         except (json.JSONDecodeError, PermissionError) as e:
             print(f"Error loading {file_path.name}: {e}")
-        except Exception as e:
-            print(f"ERROR: {e}")
-            break
 
+    conn.close()
     print(f"Done! Processed {counter} JSON files.")
 
     if RUN_GUI_AFTER_PROCESSING:
