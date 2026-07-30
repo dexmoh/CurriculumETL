@@ -93,6 +93,7 @@ def get_learning_objects(cursor: Cursor, review_id: int) -> list[Row] | None:
             faculty
         FROM learning_objects
         WHERE les_id = ?
+        ORDER BY id ASC
     """, review_id)
 
     return cursor.fetchall()

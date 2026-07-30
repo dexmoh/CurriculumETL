@@ -83,6 +83,7 @@ def get_subobjects(
             faculty
         FROM learning_object_subobjects
         WHERE lea_id = ?
+        ORDER BY id ASC
     """, learning_obj_id)
 
     return cursor.fetchall()
