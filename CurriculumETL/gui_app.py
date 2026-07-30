@@ -74,13 +74,20 @@ class GuiApp:
             search_frame, textvariable=self.author_sterm
         ).grid(row=4, column=1)
 
+        # File ID input.
+        tk.Label(search_frame, anchor="w", width=14, text="FILE ID").grid(row=5, column=0)
+        self.file_id_sterm = tk.StringVar()
+        tk.Entry(
+            search_frame, textvariable=self.file_id_sterm
+        ).grid(row=5, column=1)
+
         # Clear button.
         tk.Button(
             search_frame,
             text="CLEAR",
             command=lambda: self.clear_input(),
             width=15
-        ).grid(row=5, column=1, pady=(10, 0))
+        ).grid(row=6, column=1, pady=(10, 0))
 
         # Search button.
         tk.Button(
@@ -89,7 +96,7 @@ class GuiApp:
             command=lambda: self.search(),
             fg="white", bg="sea green",
             width=15
-        ).grid(row=6, column=1, pady=(5, 0))
+        ).grid(row=7, column=1, pady=(5, 0))
 
         ### SEARCH RESULTS LABEL ###
         self.info_label = tk.Label(
@@ -132,7 +139,8 @@ class GuiApp:
                     self.title_sterm.get(),
                     self.lesson_sterm.get(),
                     self.year_sterm.get(),
-                    self.author_sterm.get()
+                    self.author_sterm.get(),
+                    self.file_id_sterm.get()
                 )
 
                 if len(result) < 1:
@@ -217,6 +225,7 @@ class GuiApp:
         self.lesson_sterm.set("")
         self.year_sterm.set("")
         self.author_sterm.set("")
+        self.file_id_sterm.set("")
 
 def main():
     app = GuiApp()
