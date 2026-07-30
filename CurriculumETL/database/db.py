@@ -1,20 +1,21 @@
 import pyodbc
 from pyodbc import Connection
 
-def get_connection() -> Connection | None:
-    connection_string = (
-        "DRIVER={ODBC Driver 17 for SQL Server};"
-        "SERVER=localhost\\SQLEXPRESS;"
-        "DATABASE=CurriculumDB;"
-        "Trusted_Connection=yes;"
-        "TrustServerCertificate=yes;"
-    )
+CONN_STR: str = (
+    "DRIVER={ODBC Driver 17 for SQL Server};"
+    "SERVER=localhost\\SQLEXPRESS;"
+    "DATABASE=CurriculumDB;"
+    "Trusted_Connection=yes;"
+    "TrustServerCertificate=yes;"
+)
 
+def get_connection() -> Connection | None:
     try:
-        return pyodbc.connect(connection_string)
+        return pyodbc.connect(CONN_STR)
     except Exception as e:
         print(f"ERROR: Couldn't connect to the database.")
         print(f"ERROR: {e}")
+
         return None
 
 # Helper function for cleaning up variables fetched from the database.

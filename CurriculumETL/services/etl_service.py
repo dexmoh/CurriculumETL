@@ -1,27 +1,30 @@
 from database.db import get_connection
 from database.transaction import TransactionManager
-from database.repositories.lesson import insert_lesson
-from database.repositories.lesson_version import insert_lesson_version
-from database.repositories.lesson_review import insert_lesson_review
-from database.repositories.lesson_other_stats import insert_lesson_other_stats
-from database.repositories.yt_videos import insert_yt_videos
-from database.repositories.yt_links import insert_yt_links
-from database.repositories.google_videos import insert_google_videos
+
 from database.repositories.google_videos_uvod import insert_google_videos_uvod
 from database.repositories.google_videos_lvl1 import insert_google_videos_lvl1
 from database.repositories.google_videos_lvl2 import insert_google_videos_lvl2
 from database.repositories.google_videos_lvl3 import insert_google_videos_lvl3
 from database.repositories.google_videos_lvl0 import insert_google_videos_lvl0
-from database.repositories.summary import insert_summary
-from database.repositories.overview import insert_overview
-from database.repositories.forums import insert_forums
-from database.repositories.lams_activities import insert_lams_activities
+from database.repositories.lesson_other_stats import insert_lesson_other_stats
 from database.repositories.learning_objects import insert_learning_objects
+from database.repositories.lams_activities import insert_lams_activities
+from database.repositories.lesson_version import insert_lesson_version
+from database.repositories.google_videos import insert_google_videos
+from database.repositories.lesson_review import insert_lesson_review
 from database.repositories.lesson_stats import insert_lesson_stats
+from database.repositories.yt_videos import insert_yt_videos
+from database.repositories.overview import insert_overview
+from database.repositories.yt_links import insert_yt_links
+from database.repositories.summary import insert_summary
+from database.repositories.lesson import insert_lesson
+from database.repositories.forums import insert_forums
 
 # Parse JSON lecture data and map it to SQL database.
 def etl_process_json(json_data: dict):
     conn = get_connection()
+    if not conn:
+        raise Exception("Couldn't process a JSON file because database connection failed.")
 
     try:
         with TransactionManager(conn) as cursor:
