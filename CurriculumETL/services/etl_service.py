@@ -13,6 +13,7 @@ from database.repositories.lesson_version import insert_lesson_version
 from database.repositories.google_videos import insert_google_videos
 from database.repositories.lesson_review import insert_lesson_review
 from database.repositories.lesson_stats import insert_lesson_stats
+from database.repositories.lesson_version import file_id_exists
 from database.repositories.yt_videos import insert_yt_videos
 from database.repositories.overview import insert_overview
 from database.repositories.yt_links import insert_yt_links
@@ -27,6 +28,14 @@ def etl_process_json(conn: Connection, json_data: dict):
         if len(json_data["data"]["OtherStats"]["lessons"]) > 0:
             lessons_data = json_data["data"]["OtherStats"]["lessons"][0]
 
+        # Check if lesson already exists in the database.
+        file_id = json_data.get("fileId")
+        if not file_id:
+            return
+        elif file_id_exists(cursor, file_id):
+            print("Lesson with this file ID already exists in the database, skipping...")
+            return
+
         lesson_id = insert_lesson(
             cursor,
             json_data["data"].get("CourseCode"),
@@ -40,7 +49,7 @@ def etl_process_json(conn: Connection, json_data: dict):
         version_id = insert_lesson_version(
             cursor,
             lesson_id,
-            json_data.get("fileId")
+            file_id
         )
 
         review_id = insert_lesson_review(
