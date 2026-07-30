@@ -298,17 +298,12 @@ def load_lesson_info(
 
             activity_id: str = tree.insert(
                 activities_tab, "end",
-                text=sanitize(activity.activity_title, True)
+                text=f"{sanitize(activity.activity_title, True)} ({sanitize(activity.tool_display_name)})"
             )
 
             tree.insert(
                 activity_id, "end",
                 text=f"Tool content ID: {sanitize(activity.tool_content_id)}"
-            )
-
-            tree.insert(
-                activity_id, "end",
-                text=f"Tool display name: {sanitize(activity.tool_display_name, True)}"
             )
 
             tree.insert(
