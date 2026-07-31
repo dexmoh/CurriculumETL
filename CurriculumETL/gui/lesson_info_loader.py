@@ -5,6 +5,7 @@ from database.db import sanitize
 
 from database.repositories.learning_object_subobjects import get_subobjects
 from database.repositories.learning_objects import get_learning_objects
+from database.repositories.lesson_other_stats import get_other_stats
 from database.repositories.lesson_version import get_lesson_version
 from database.repositories.lesson_review import get_lesson_review
 from database.repositories.lams_activities import get_activities
@@ -441,4 +442,179 @@ def load_lesson_info(
         tree.insert(
             stats_tab, "end",
             text=f"Has projekat: {sanitize(stats_data.has_projekat)}"
+        )
+
+    other_stats_data = get_other_stats(cursor, review_data.id)
+
+    if other_stats_data:
+        other_stats_tab: str = tree.insert(lesson_id, "end", text="Other Stats")
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count total: {sanitize(other_stats_data.word_count_total)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv1: {sanitize(other_stats_data.word_count_lv1)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv2: {sanitize(other_stats_data.word_count_lv2)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv3: {sanitize(other_stats_data.word_count_lv3)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv0: {sanitize(other_stats_data.word_count_lv0)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count total per class: {sanitize(other_stats_data.word_count_total_per_class)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv1 per class: {sanitize(other_stats_data.word_count_lv1_per_class)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv2 per class: {sanitize(other_stats_data.word_count_lv2_per_class)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv3 per class: {sanitize(other_stats_data.word_count_lv3_per_class)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count lv0 per class: {sanitize(other_stats_data.word_count_lv0_per_class)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Word count total per class percentage: {sanitize(other_stats_data.word_count_total_per_class_percentage)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Snippet words: {sanitize(other_stats_data.snippet_words)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Latex words: {sanitize(other_stats_data.latex_words)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Last call: {sanitize(other_stats_data.last_call)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Figure count: {sanitize(other_stats_data.figure_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"YouTube video count: {sanitize(other_stats_data.yt_video_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Google video count: {sanitize(other_stats_data.google_video_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Google video count lv1: {sanitize(other_stats_data.google_video_count_lvl1)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Google video count lv2: {sanitize(other_stats_data.google_video_count_lvl2)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Google video count lv3: {sanitize(other_stats_data.google_video_count_lvl3)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Google video count lv0: {sanitize(other_stats_data.google_video_count_lvl0)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Google uvod video count: {sanitize(other_stats_data.google_uvod_video_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Audio count: {sanitize(other_stats_data.audio_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Object count: {sanitize(other_stats_data.object_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Subobject count: {sanitize(other_stats_data.subobject_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Section count: {sanitize(other_stats_data.section_count)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Average Google time: {sanitize(other_stats_data.average_google_time)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Average Google uvod time: {sanitize(other_stats_data.average_google_uvod_time)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Total time of Google videos: {sanitize(other_stats_data.total_time_of_google_videos)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Total time of Google videos uvod: {sanitize(other_stats_data.total_time_of_google_videos_uvod)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Total time of Google videos lv1: {sanitize(other_stats_data.total_time_of_google_videos_lvl1)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Total time of Google videos lv2: {sanitize(other_stats_data.total_time_of_google_videos_lvl2)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Total time of Google videos lv3: {sanitize(other_stats_data.total_time_of_google_videos_lvl3)}"
+        )
+
+        tree.insert(
+            other_stats_tab, "end",
+            text=f"Total time of Google videos lv0: {sanitize(other_stats_data.total_time_of_google_videos_lvl0)}"
         )

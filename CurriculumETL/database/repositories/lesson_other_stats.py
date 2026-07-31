@@ -1,4 +1,5 @@
 from pyodbc import Cursor
+from pyodbc import Row
 
 def insert_lesson_other_stats(
         cursor: Cursor,
@@ -84,3 +85,51 @@ def insert_lesson_other_stats(
     )
 
     return cursor.fetchone()[0]
+
+def get_other_stats(cursor: Cursor, review_id: int) -> Row | None:
+    if (not isinstance(review_id, int)) or (review_id < 1):
+        return None
+
+    cursor.execute("""
+        SELECT
+            id,
+            les_id,
+            word_count_total,
+            word_count_lv1,
+            word_count_lv2,
+            word_count_lv3,
+            word_count_lv0,
+            word_count_total_per_class,
+            word_count_lv1_per_class,
+            word_count_lv2_per_class,
+            word_count_lv3_per_class,
+            word_count_lv0_per_class,
+            word_count_total_per_class_percentage,
+            snippet_words,
+            latex_words,
+            last_call,
+            figure_count,
+            yt_video_count,
+            google_video_count,
+            google_video_count_lvl1,
+            google_video_count_lvl2,
+            google_video_count_lvl3,
+            google_video_count_lvl0,
+            google_uvod_video_count,
+            audio_count,
+            object_count,
+            subobject_count,
+            section_count,
+            average_google_time,
+            average_google_uvod_time,
+            total_time_of_google_videos,
+            total_time_of_google_videos_uvod,
+            total_time_of_google_videos_lvl1,
+            total_time_of_google_videos_lvl2,
+            total_time_of_google_videos_lvl3,
+            total_time_of_google_videos_lvl0
+        FROM lesson_other_stats
+        WHERE les_id = ?
+    """, review_id)
+
+    return cursor.fetchone()
