@@ -13,6 +13,7 @@ from database.repositories.lesson import get_lesson_by_id
 from database.repositories.lesson_stats import get_stats
 from database.repositories.overview import get_overview
 from database.repositories.summary import get_summary
+from database.repositories.yt_links import get_links
 from database.repositories.forums import get_forums
 
 # Load lesson info from the database and display it inside a Treeview.
@@ -444,6 +445,7 @@ def load_lesson_info(
             text=f"Has projekat: {sanitize(stats_data.has_projekat)}"
         )
 
+    ### OTHER STATS TAB ###
     other_stats_data = get_other_stats(cursor, review_data.id)
 
     if other_stats_data:
@@ -618,3 +620,15 @@ def load_lesson_info(
             other_stats_tab, "end",
             text=f"Total time of Google videos lv0: {sanitize(other_stats_data.total_time_of_google_videos_lvl0)}"
         )
+
+        ### YOUTUBE LINKS TAB ###
+        yt_links_data = get_links(cursor, other_stats_data.id)
+
+        if yt_links_data:
+            yt_links_tab: str = tree.insert(other_stats_tab, "end", text="YouTube Links")
+
+            for link in yt_links_data:
+                tree.insert(
+                    yt_links_tab, "end",
+                    text=sanitize(link.url)
+                )
